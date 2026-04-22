@@ -337,8 +337,8 @@ function App() {
         isPS5 ? "h-screen flex-1 min-h-0" : "md:h-screen md:flex-1 md:min-h-0"
       )}>
         <main className={cn(
-          "custom-scrollbar pb-36 md:pb-16 max-w-[1800px] mx-auto w-full flex flex-col",
-          isPS5 ? "p-16 flex-1 overflow-y-auto" : "p-6 md:p-16 md:flex-1 md:overflow-y-auto"
+          "custom-scrollbar pb-44 md:pb-24 max-w-[1800px] mx-auto w-full flex flex-col",
+          isPS5 ? "pt-16 px-16 flex-1 overflow-y-auto" : "pt-6 px-6 md:pt-16 md:px-16 md:flex-1 md:overflow-y-auto"
         )}>
           {view === 'dashboard' && (
             <div className="space-y-8 md:space-y-12">
