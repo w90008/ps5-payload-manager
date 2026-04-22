@@ -112,9 +112,9 @@ const StorageHub = ({ payloads, onInstall, onDelete, onUpload, onImportFromUsb, 
           </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
+        <div className={cn("grid gap-4", isPS5 ? "grid-cols-2" : "grid-cols-1")}>
           {internalPayloads.length === 0 ? (
-            <div className="py-20 border-2 border-dashed border-white/5 rounded-ps-3xl flex flex-col items-center justify-center space-y-4 bg-white/[0.01]">
+            <div className="col-span-full py-20 border-2 border-dashed border-white/5 rounded-ps-3xl flex flex-col items-center justify-center space-y-4 bg-white/[0.01]">
               <Package className="w-16 h-16 text-white/5" />
               <p className="text-zinc-500 font-bold uppercase tracking-widest text-sm italic">Library Empty</p>
             </div>
@@ -123,31 +123,34 @@ const StorageHub = ({ payloads, onInstall, onDelete, onUpload, onImportFromUsb, 
               const fileName = path.split('/').pop()
               const remoteMatch = remoteStatus.find(rp => rp.filename === fileName || rp.installedFilename === fileName)
               return (
-                <div key={i} className="group flex items-center justify-between p-6 glass-card rounded-ps-2xl border-white/10 hover:border-ps-blue/30">
-                  <div className="flex items-center space-x-6">
-                    <div className="p-4 bg-white/5 rounded-2xl group-hover:bg-ps-blue/10 transition-colors">
-                      <Package className="w-8 h-8 text-zinc-400 group-hover:text-ps-blue transition-colors" />
+                <div key={i} className={cn(
+                  "group flex justify-between p-4 md:p-6 glass-card rounded-ps-2xl border-white/10 hover:border-ps-blue/30 gap-4",
+                  isPS5 ? "flex-row items-center" : "flex-col md:flex-row md:items-center"
+                )}>
+                  <div className="flex items-center space-x-4 md:space-x-6 min-w-0">
+                    <div className="p-3 md:p-4 bg-white/5 rounded-2xl group-hover:bg-ps-blue/10 transition-colors shrink-0">
+                      <Package className="w-6 h-6 md:w-8 md:h-8 text-zinc-400 group-hover:text-ps-blue transition-colors" />
                     </div>
-                    <div>
-                      <PayloadName path={fileName} className="text-2xl" versionClassName="text-sm px-3 py-1 bg-ps-blue/10 text-ps-blue border-ps-blue/20" />
+                    <div className="min-w-0 flex-1">
+                      <PayloadName path={fileName} className="text-xl md:text-2xl" versionClassName="text-[10px] md:text-sm px-2 md:px-3 py-0.5 md:py-1 bg-ps-blue/10 text-ps-blue border-ps-blue/20" />
                     </div>
                   </div>
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-3 md:space-x-4 ml-auto md:ml-0">
                     {remoteMatch?.isUpdate && (
                       <button
                         onClick={() => onInstall(remoteMatch, repoUrl)}
-                        className="flex items-center space-x-3 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-sm transition-all shadow-xl shadow-emerald-900/20"
+                        className="flex items-center space-x-2 md:space-x-3 px-4 md:px-6 py-2 md:py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs md:text-sm transition-all shadow-xl shadow-emerald-900/20"
                       >
-                        <RefreshCw className="w-5 h-5 animate-spin-slow" />
-                        <span>Update Available</span>
+                        <RefreshCw className="w-4 h-4 md:w-5 md:h-5 animate-spin-slow" />
+                        <span>Update</span>
                       </button>
                     )}
                     <button
                       onClick={() => onDelete(fileName)}
-                      className="p-4 rounded-xl bg-red-950/20 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all shadow-xl"
+                      className="p-3 md:p-4 rounded-xl bg-red-950/20 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all shadow-xl"
                       title="Remove Payload"
                     >
-                      <Trash2 className="w-6 h-6" />
+                      <Trash2 className="w-5 h-5 md:w-6 md:h-6" />
                     </button>
                   </div>
                 </div>
@@ -169,9 +172,9 @@ const StorageHub = ({ payloads, onInstall, onDelete, onUpload, onImportFromUsb, 
           </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
+        <div className={cn("grid gap-4", isPS5 ? "grid-cols-2" : "grid-cols-1")}>
           {payloads.filter(p => p.includes('/mnt/usb')).length === 0 ? (
-            <div className="py-20 border-2 border-dashed border-white/5 rounded-ps-3xl flex flex-col items-center justify-center space-y-4 bg-white/[0.01]">
+            <div className="col-span-full py-20 border-2 border-dashed border-white/5 rounded-ps-3xl flex flex-col items-center justify-center space-y-4 bg-white/[0.01]">
               <HardDrive className="w-16 h-16 text-white/5" />
               <p className="text-zinc-500 font-bold uppercase tracking-widest text-sm italic">No USB Payloads Found</p>
             </div>
@@ -179,22 +182,25 @@ const StorageHub = ({ payloads, onInstall, onDelete, onUpload, onImportFromUsb, 
             payloads.filter(p => p.includes('/mnt/usb')).map((path, i) => {
               const fileName = path.split('/').pop()
               return (
-                <div key={i} className="group flex items-center justify-between p-6 glass-card rounded-ps-2xl border-white/10 hover:border-ps-blue/30">
-                  <div className="flex items-center space-x-6">
-                    <div className="p-4 bg-white/5 rounded-2xl group-hover:bg-ps-blue/10 transition-colors">
-                      <Usb className="w-8 h-8 text-zinc-400 group-hover:text-ps-blue transition-colors" />
+                <div key={i} className={cn(
+                  "group flex justify-between p-4 md:p-6 glass-card rounded-ps-2xl border-white/10 hover:border-ps-blue/30 gap-4",
+                  isPS5 ? "flex-row items-center" : "flex-col md:flex-row md:items-center"
+                )}>
+                  <div className="flex items-center space-x-4 md:space-x-6 min-w-0">
+                    <div className="p-3 md:p-4 bg-white/5 rounded-2xl group-hover:bg-ps-blue/10 transition-colors shrink-0">
+                      <Usb className="w-6 h-6 md:w-8 md:h-8 text-zinc-400 group-hover:text-ps-blue transition-colors" />
                     </div>
-                    <div className="space-y-1">
-                      <PayloadName path={path} className="text-2xl" versionClassName="text-sm px-3 py-1 bg-ps-blue/10 text-ps-blue border-ps-blue/20" hideIcon={true} />
-                      <p className="text-[10px] text-zinc-600 font-medium font-mono uppercase tracking-tighter opacity-60">{path}</p>
+                    <div className="space-y-1 min-w-0 flex-1">
+                      <PayloadName path={path} className="text-xl md:text-2xl" versionClassName="text-[10px] md:text-sm px-2 md:px-3 py-0.5 md:py-1 bg-ps-blue/10 text-ps-blue border-ps-blue/20" hideIcon={true} />
+                      <p className="text-[10px] text-zinc-600 font-medium font-mono uppercase tracking-tighter opacity-60 truncate">{path}</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center ml-auto md:ml-0">
                     <button
                       onClick={() => onImportFromUsb(path)}
-                      className="flex items-center space-x-3 px-6 py-4 bg-white/5 hover:bg-ps-blue text-white rounded-xl font-bold text-sm transition-all border border-white/10 hover:border-ps-blue shadow-xl group/btn"
+                      className="flex items-center space-x-2 md:space-x-3 px-4 md:px-6 py-3 md:py-4 bg-white/5 hover:bg-ps-blue text-white rounded-xl font-bold text-xs md:text-sm transition-all border border-white/10 hover:border-ps-blue shadow-xl group/btn"
                     >
-                      <Database className="w-5 h-5 text-ps-blue group-hover/btn:text-white transition-colors" />
+                      <Database className="w-4 h-4 md:w-5 md:h-5 text-ps-blue group-hover/btn:text-white transition-colors" />
                       <span>Move to Internal</span>
                     </button>
                   </div>
@@ -246,24 +252,25 @@ const StorageHub = ({ payloads, onInstall, onDelete, onUpload, onImportFromUsb, 
             ) : (
               cloudItems.map((p, i) => (
                 <div key={i} className={cn(
-                  "glass-card p-8 rounded-ps-3xl flex justify-between gap-8 border-white/10 hover:border-ps-blue/20 transition-all bg-white/[0.01]",
-                  isPS5 ? "flex-row items-center" : "flex-col md:flex-row md:items-center"
+                  "glass-card p-6 md:p-8 rounded-ps-3xl flex flex-col md:flex-row justify-between gap-4 md:gap-8 border-white/10 hover:border-ps-blue/20 transition-all bg-white/[0.01]",
+                  isPS5 ? "flex-row items-center" : "items-start md:items-center"
                 )}>
-                  <div className="space-y-3">
+                  <div className="space-y-2 md:space-y-3 min-w-0">
                     <div className="flex items-center space-x-4">
-                      <PayloadName path={p.filename} className="text-2xl" versionClassName="text-sm px-3 py-1 bg-ps-blue/10 text-ps-blue border-ps-blue/20" />
+                      <PayloadName path={p.filename} className="text-xl md:text-2xl" versionClassName="text-[10px] md:text-sm px-2 md:px-3 py-0.5 md:py-1 bg-ps-blue/10 text-ps-blue border-ps-blue/20" />
                     </div>
-                    <p className="text-lg text-zinc-400 font-medium max-w-3xl leading-relaxed">{p.description}</p>
+                    <p className="text-sm md:text-lg text-zinc-400 font-medium max-w-3xl leading-relaxed">{p.description}</p>
                   </div>
 
                   <button
                     onClick={() => onInstall(p, repoUrl)}
                     className={cn(
-                      "flex items-center justify-center space-x-4 px-8 py-5 rounded-2xl font-bold text-xl transition-all shadow-2xl shrink-0 transform active:scale-95",
+                      "flex items-center justify-center space-x-3 md:space-x-4 px-6 md:px-8 py-3 md:py-5 rounded-2xl font-bold text-lg md:text-xl transition-all shadow-2xl shrink-0 transform active:scale-95",
+                      isPS5 ? "w-auto px-12" : "w-full md:w-auto",
                       p.isUpdate ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/20" : "bg-ps-blue hover:bg-ps-blue/80 text-white shadow-ps-blue/20"
                     )}
                   >
-                    <CloudDownload className="w-7 h-7" />
+                    <CloudDownload className="w-5 h-5 md:w-7 md:h-7" />
                     <span>{p.isUpdate ? "Update" : "Install"}</span>
                   </button>
                 </div>
@@ -275,19 +282,22 @@ const StorageHub = ({ payloads, onInstall, onDelete, onUpload, onImportFromUsb, 
 
       {/* Footer Info for PS5 */}
       {isPS5 && (
-        <div className="glass-card p-10 rounded-ps-3xl flex items-center space-x-12 border-white/10 bg-black/40 mt-16">
-          <div className="flex flex-col items-center space-y-6 shrink-0">
-            <div className="bg-white p-6 rounded-3xl shadow-[0_0_50px_rgba(255,255,255,0.1)]">
-              <QRCodeSVG value={`http://${ip}:8084`} size={160} level="M" />
+        <div className={cn(
+          "glass-card p-6 md:p-10 rounded-ps-3xl flex items-center gap-8 md:gap-12 border-white/10 bg-black/40 mt-12 md:mt-16",
+          isPS5 ? "flex-row" : "flex-col md:flex-row"
+        )}>
+          <div className="flex flex-col items-center space-y-4 md:space-y-6 shrink-0">
+            <div className="bg-white p-4 md:p-6 rounded-3xl shadow-[0_0_50px_rgba(255,255,255,0.1)]">
+              <QRCodeSVG value={`http://${ip}:8084`} size={isPS5 ? 160 : 120} level="M" />
             </div>
-            <code className="text-white font-mono text-lg font-black opacity-90 italic tracking-tight uppercase">{ip}:8084</code>
+            <code className="text-white font-mono text-base md:text-lg font-black opacity-90 italic tracking-tight uppercase">{ip}:8084</code>
           </div>
-          <div className="flex-1 space-y-4">
-            <h4 className="label-caps !text-white !opacity-100 text-2xl tracking-widest flex items-center space-x-4">
-              <div className="w-2 h-8 bg-ps-blue rounded-full" />
+          <div className="flex-1 space-y-3 md:space-y-4 text-center md:text-left">
+            <h4 className="label-caps !text-white !opacity-100 text-xl md:text-2xl tracking-widest flex items-center justify-center md:justify-start space-x-3 md:space-x-4">
+              <div className="w-1.5 h-6 md:w-2 md:h-8 bg-ps-blue rounded-full" />
               <span>Remote Management</span>
             </h4>
-            <p className="text-xl text-zinc-400 leading-relaxed italic font-medium max-w-3xl">
+            <p className="text-lg md:text-xl text-zinc-400 leading-relaxed italic font-medium max-w-3xl">
               Access this dashboard from your computer or phone to manage and upload payloads directly from your local network.
             </p>
           </div>

@@ -389,8 +389,8 @@ function App() {
         isPS5 ? "h-screen flex-1 min-h-0" : "md:h-screen md:flex-1 md:min-h-0"
       )}>
         <main className={cn(
-          "custom-scrollbar pb-28 md:pb-12 max-w-[1800px] mx-auto w-full flex flex-col",
-          isPS5 ? "pt-16 px-16 flex-1 overflow-y-auto" : "pt-6 px-6 md:pt-16 md:px-16 md:flex-1 md:overflow-y-auto"
+          "custom-scrollbar max-w-[1800px] mx-auto w-full flex flex-col",
+          isPS5 ? "pt-16 px-16 pb-12 flex-1 overflow-y-auto" : "pt-6 px-6 pb-36 md:pt-16 md:px-16 md:pb-12 md:flex-1 md:overflow-y-auto"
         )}>
           {view === 'dashboard' && (
             <div className="space-y-8 md:space-y-12">
@@ -399,7 +399,7 @@ function App() {
               </h2>
               <div className={cn(
                 "grid gap-4 md:gap-6",
-                isPS5 ? "grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                isPS5 ? "grid-cols-3 xl:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
               )}>
                 {loadingPayloads ? (
                   Array.from({ length: 4 }).map((_, i) => (

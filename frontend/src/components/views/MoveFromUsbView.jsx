@@ -66,14 +66,14 @@ const MoveFromUsbView = ({ path, onBack, onComplete, addToast }) => {
         <p className="text-zinc-500 max-w-2xl">This will move the selected payload from your USB drive to the PS5's internal data storage.</p>
       </div>
 
-      <div className="glass-card p-10 rounded-ps-3xl border-white/10 bg-white/[0.02] space-y-10">
-        <div className="flex items-center space-x-8">
-          <div className="p-6 bg-ps-blue/20 rounded-3xl border border-ps-blue/30">
-            <Usb className="w-10 h-10 text-ps-blue" />
+      <div className="glass-card p-6 md:p-10 rounded-ps-3xl border-white/10 bg-white/[0.02] space-y-8 md:space-y-10">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-8 text-center sm:text-left">
+          <div className="p-4 md:p-6 bg-ps-blue/20 rounded-3xl border border-ps-blue/30 shrink-0">
+            <Usb className="w-8 h-8 md:w-10 md:h-10 text-ps-blue" />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1 md:space-y-2 min-w-0 flex-1">
             <p className="label-caps !text-ps-blue">Source Path</p>
-            <p className="text-2xl font-black text-white italic tracking-tight truncate max-w-xl">{path}</p>
+            <p className="text-xl md:text-2xl font-black text-white italic tracking-tight truncate w-full">{path}</p>
           </div>
         </div>
 
@@ -98,50 +98,50 @@ const MoveFromUsbView = ({ path, onBack, onComplete, addToast }) => {
         )}
 
         {status === 'exists_same' && (
-          <div className="space-y-8">
-            <div className="p-8 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-start space-x-6">
+          <div className="space-y-6 md:space-y-8">
+            <div className="p-6 md:p-8 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 text-center md:text-left">
               <CheckCircle2 className="w-8 h-8 text-emerald-500 shrink-0" />
               <div className="space-y-2">
                 <p className="text-lg font-bold text-white">Identical file already exists</p>
-                <p className="text-emerald-400/80 leading-relaxed">
-                  A payload with the same name and content (SHA256: {details?.sha256?.substring(0, 16)}...) is already in your internal library. No action is needed.
+                <p className="text-sm md:text-lg text-emerald-400/80 leading-relaxed">
+                  A payload with the same name and content (SHA256: {details?.sha256?.substring(0, 12)}...) is already in your internal library. No action is needed.
                 </p>
               </div>
             </div>
-            <button onClick={onBack} className="w-full py-6 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-black uppercase italic text-xl transition-all border border-white/10">Return to Storage Hub</button>
+            <button onClick={onBack} className="w-full py-4 md:py-6 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-black uppercase italic text-lg md:text-xl transition-all border border-white/10">Return to Storage Hub</button>
           </div>
         )}
 
         {status === 'exists_different' && (
-          <div className="space-y-8">
-            <div className="p-8 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-start space-x-6">
+          <div className="space-y-6 md:space-y-8">
+            <div className="p-6 md:p-8 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 text-center md:text-left">
               <AlertTriangle className="w-8 h-8 text-amber-500 shrink-0" />
               <div className="space-y-2">
                 <p className="text-lg font-bold text-white">Previous version detected</p>
-                <p className="text-amber-400/80 leading-relaxed">
+                <p className="text-sm md:text-lg text-amber-400/80 leading-relaxed">
                   A version of <strong>{details?.folder_name || details?.filename}</strong> already exists in internal storage. Moving this will replace the current installation. Do you want to proceed?
                 </p>
               </div>
             </div>
-            <div className="flex space-x-4">
-              <button onClick={onBack} className="flex-1 py-6 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold uppercase transition-all">Cancel</button>
-              <button onClick={() => performMove(true)} className="flex-1 py-6 rounded-2xl bg-ps-blue hover:bg-ps-blue/80 text-white font-black uppercase italic text-xl transition-all shadow-xl shadow-ps-blue/20">Overwrite Existing</button>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button onClick={onBack} className="flex-1 py-4 md:py-6 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold uppercase transition-all">Cancel</button>
+              <button onClick={() => performMove(true)} className="flex-1 py-4 md:py-6 rounded-2xl bg-ps-blue hover:bg-ps-blue/80 text-white font-black uppercase italic text-lg md:text-xl transition-all shadow-xl shadow-ps-blue/20">Overwrite Existing</button>
             </div>
           </div>
         )}
 
         {status === 'confirm' && (
-          <div className="space-y-8">
-            <div className="p-8 bg-ps-blue/5 border border-ps-blue/10 rounded-2xl flex items-start space-x-6">
+          <div className="space-y-6 md:space-y-8">
+            <div className="p-6 md:p-8 bg-ps-blue/5 border border-ps-blue/10 rounded-2xl flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 text-center md:text-left">
               <Info className="w-8 h-8 text-ps-blue shrink-0" />
               <div className="space-y-2">
                 <p className="text-lg font-bold text-white">Ready to Import</p>
-                <p className="text-zinc-400 leading-relaxed">
+                <p className="text-sm md:text-lg text-zinc-400 leading-relaxed">
                   The payload will be copied to internal storage. Once the copy is verified, the original file will be removed from your USB drive.
                 </p>
               </div>
             </div>
-            <button onClick={() => performMove(false)} className="w-full py-6 rounded-2xl bg-ps-blue hover:bg-ps-blue/80 text-white font-black uppercase italic text-2xl transition-all shadow-2xl shadow-ps-blue/30">Move to Internal Storage</button>
+            <button onClick={() => performMove(false)} className="w-full py-4 md:py-6 rounded-2xl bg-ps-blue hover:bg-ps-blue/80 text-white font-black uppercase italic text-xl md:text-2xl transition-all shadow-2xl shadow-ps-blue/30">Move to Internal Storage</button>
           </div>
         )}
 

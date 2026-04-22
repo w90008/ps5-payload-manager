@@ -101,20 +101,12 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
       <div className="flex items-center justify-between shrink-0">
         <div className="flex items-center space-x-4">
           {subView === 'add' && (
-            <button onClick={() => setSubView('list')} className="p-2 bg-white/5 rounded-xl border border-white/10 md:hidden">
+            <button onClick={() => setSubView('list')} className="p-2 bg-white/5 rounded-xl border border-white/10 lg:hidden">
               <ArrowLeft className="w-5 h-5" />
             </button>
           )}
           <h3 className="label-caps !text-white !opacity-100 text-xl tracking-widest">Available Payloads</h3>
         </div>
-        {subView === 'list' && (
-          <button
-            onClick={() => handleToggle(false)}
-            className="px-6 py-2 rounded-xl font-black uppercase italic tracking-tighter bg-red-600/10 text-red-500 border border-red-500/30 hover:bg-red-600 hover:text-white transition-all shadow-lg text-xs"
-          >
-            Disable Autoload
-          </button>
-        )}
       </div>
       <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-0 pb-6">
         <div className="grid grid-cols-1 gap-4">
@@ -190,14 +182,10 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
           </div>
         </div>
         <button
-          onClick={() => setSubView('add')}
-          className={cn(
-            "flex items-center space-x-2 px-6 py-3 bg-ps-blue text-white rounded-xl font-bold uppercase tracking-tight shadow-xl",
-            isPS5 ? "hidden" : "md:hidden"
-          )}
+          onClick={() => handleToggle(false)}
+          className="px-4 py-2 rounded-xl font-black uppercase italic tracking-tighter bg-red-600/10 text-red-500 border border-red-500/30 hover:bg-red-600 hover:text-white transition-all shadow-lg text-xs"
         >
-          <Activity className="w-5 h-5" />
-          <span>Add Item</span>
+          Disable Autoload
         </button>
       </div>
 
@@ -228,6 +216,16 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
               <p className="text-2xl font-bold">Sequence Empty</p>
             </div>
           )}
+
+          <div className={cn("pt-4 mt-2", isPS5 ? "hidden" : "lg:hidden")}>
+            <button
+              onClick={() => setSubView('add')}
+              className="w-full flex items-center justify-center space-x-4 p-6 bg-ps-blue/10 hover:bg-ps-blue text-ps-blue hover:text-white rounded-2xl border border-dashed border-ps-blue/30 hover:border-ps-blue transition-all group shadow-lg"
+            >
+              <Activity className="w-6 h-6" />
+              <span className="font-black italic text-xl uppercase tracking-tighter">Add Item to Sequence</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -261,19 +259,21 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
   }
 
   return (
-    <div className="h-full flex flex-col animate-fade-in min-h-0">
-      <div className={cn(
-        "gap-12 h-full min-h-0",
-        isPS5 ? "grid grid-cols-2" : "hidden md:grid md:grid-cols-2"
-      )}>
-        {renderAvailable()}
-        {renderSequence()}
-      </div>
-      <div className={cn(
-        "h-full flex flex-col min-h-0",
-        isPS5 ? "hidden" : "md:hidden"
-      )}>
-        {subView === 'list' ? renderSequence() : renderAvailable()}
+    <div className="h-full flex flex-col min-h-0">
+      <div className="flex-1 flex flex-col animate-fade-in min-h-0">
+        <div className={cn(
+          "gap-12 h-full min-h-0",
+          isPS5 ? "grid grid-cols-2" : "hidden lg:grid lg:grid-cols-2"
+        )}>
+          {renderAvailable()}
+          {renderSequence()}
+        </div>
+        <div className={cn(
+          "h-full flex flex-col min-h-0",
+          isPS5 ? "hidden" : "lg:hidden"
+        )}>
+          {subView === 'list' ? renderSequence() : renderAvailable()}
+        </div>
       </div>
 
       <Modal
@@ -289,32 +289,32 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
           </button>
         }
       >
-        <div className="space-y-8">
-          <div className="grid grid-cols-3 gap-4">
+        <div className="space-y-6 md:space-y-8">
+          <div className="grid grid-cols-3 gap-3 md:gap-4">
             {[1, 3, 5].map(s => (
               <button
                 key={s}
                 onClick={() => addDelay(s * 1000)}
-                className="py-6 bg-ps-blue/20 hover:bg-ps-blue border border-ps-blue/30 text-white rounded-2xl font-black text-2xl transition-all shadow-lg"
+                className="py-4 md:py-6 bg-ps-blue/20 hover:bg-ps-blue border border-ps-blue/30 text-white rounded-2xl font-black text-xl md:text-2xl transition-all shadow-lg"
               >
                 {s}s
               </button>
             ))}
           </div>
 
-          <div className="space-y-4">
-            <p className="label-caps !text-zinc-500">Custom Delay (milliseconds)</p>
-            <div className="flex space-x-4">
+          <div className="space-y-3 md:space-y-4">
+            <p className="label-caps !text-zinc-500 text-sm md:text-base">Custom Delay (ms)</p>
+            <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="number"
                 placeholder="e.g. 2500"
                 value={customDelay}
                 onChange={(e) => setCustomDelay(e.target.value)}
-                className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-5 text-white font-mono text-2xl focus:border-ps-blue outline-none transition-all"
+                className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 md:p-5 text-white font-mono text-xl md:text-2xl focus:border-ps-blue outline-none transition-all"
               />
               <button
                 onClick={() => customDelay && addDelay(parseInt(customDelay))}
-                className="px-10 bg-ps-blue text-white rounded-2xl font-black uppercase italic tracking-tighter text-xl shadow-2xl hover:bg-ps-blue/80 transition-all"
+                className="py-4 md:py-0 px-8 md:px-10 bg-ps-blue text-white rounded-2xl font-black uppercase italic tracking-tighter text-lg md:text-xl shadow-2xl hover:bg-ps-blue/80 transition-all shrink-0"
               >
                 Add
               </button>
