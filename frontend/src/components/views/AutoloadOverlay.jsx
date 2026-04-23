@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { CheckCircle2, AlertTriangle, Loader2, ShieldCheck } from 'lucide-react'
+import { CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react'
 import { cn } from '../../utils/helpers'
 import PayloadName from '../ui/PayloadName'
 
@@ -139,8 +139,7 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
           >
             <div className="flex items-center justify-between mb-6 px-2 sticky top-0 bg-black/80 backdrop-blur-md py-4 z-10 rounded-2xl border-b border-white/5">
               <h3 className="label-caps !text-white !opacity-100 text-sm tracking-widest flex items-center space-x-3">
-                <ShieldCheck className="w-5 h-5 text-ps-blue" />
-                <span>Payload Checklist</span>
+                <span>Payload List</span>
               </h3>
               <span className="bg-white/10 px-4 py-1 rounded-full text-zinc-300 font-black text-xs">
                 {isDone ? status.total : status.done} / {status.total}
@@ -167,7 +166,7 @@ const AutoloadOverlay = ({ status, onCancel, onFinish, isPS5 }) => {
                       <PayloadName
                         path={name}
                         className={cn("text-xl font-bold", active ? 'text-white' : 'text-zinc-400')}
-                        versionClassName={active ? 'bg-ps-blue text-white border-transparent' : ''}
+                        stacked
                       />
                     </div>
                     {done && (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { RefreshCw, ArrowLeft, ArrowRight, Activity, Zap, ChevronUp, ChevronDown, Trash2, CheckCircle2, ShieldCheck } from 'lucide-react'
+import { RefreshCw, ArrowLeft, ArrowRight, Activity, Zap, ChevronUp, ChevronDown, Trash2, CheckCircle2 } from 'lucide-react'
 import { cn, isPS5 } from '../../utils/helpers'
 import PayloadName from '../ui/PayloadName'
 import Modal from '../ui/Modal'
@@ -38,13 +38,13 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
       const shouldEnable = autoloadList.length > 0 && enabled
       const finalList = autoloadList.map(p => p === 'DELAY' ? '!1000' : p)
       const finalStr = finalList.join(',')
-      
+
       setSaving(true)
-      const success = await onSaveConfig({ 
-        AUTOLOAD_ENABLED: shouldEnable, 
+      const success = await onSaveConfig({
+        AUTOLOAD_ENABLED: shouldEnable,
         AUTOLOAD_LIST: finalStr
       })
-      
+
       if (success) {
         lastSyncedRef.current = `${shouldEnable}:${finalStr}`
         setSaved(true)
@@ -121,12 +121,12 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
                 onClick={() => !isBlocked && addPayload(p)}
                 disabled={isBlocked}
                 className={cn(
-                  "flex items-center justify-between p-6 glass-card rounded-2xl border-white/20 transition-all text-left",
+                  "flex items-start justify-between p-6 glass-card rounded-2xl border-white/20 transition-all text-left",
                   isBlocked ? "opacity-40 cursor-not-allowed" : "bg-white/[0.03] hover:border-ps-blue group"
                 )}
               >
-                <PayloadName path={p} className={cn("text-xl", isBlocked ? "text-zinc-500" : "text-white")} />
-                <ArrowRight className={cn("w-6 h-6 transition-all", isBlocked ? "text-zinc-800" : "text-zinc-500 group-hover:text-ps-blue group-hover:translate-x-2")} />
+                <PayloadName path={p} className={cn("text-xl", isBlocked ? "text-zinc-500" : "text-white")} stacked />
+                <ArrowRight className={cn("w-6 h-6 transition-all shrink-0 mt-1", isBlocked ? "text-zinc-800" : "text-zinc-500 group-hover:text-ps-blue group-hover:translate-x-2")} />
               </button>
             )
           })}
@@ -144,12 +144,11 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
           </div>
           <div className="pt-8 border-t border-white/5 mt-8 text-center space-y-4">
             <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest opacity-60">Missing a payload?</p>
-            <button 
+            <button
               onClick={() => onRedirect('storage')}
               className="group flex flex-col items-center mx-auto space-y-3"
             >
               <div className="flex items-center space-x-3 text-ps-blue group-hover:text-white transition-colors">
-                <ShieldCheck className="w-5 h-5" />
                 <span className="font-black italic text-lg uppercase tracking-tight">Move from USB to Internal</span>
               </div>
               <p className="text-xs text-zinc-600 max-w-[200px] leading-relaxed">Required for payloads you want to use in the Autoload sequence.</p>
@@ -192,16 +191,18 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
       <div className="glass-panel p-6 rounded-ps-3xl border-white/10 flex-1 overflow-hidden flex flex-col min-h-0">
         <div className="flex-1 overflow-y-auto custom-scrollbar space-y-4 pr-2 mb-2 pb-6">
           {autoloadList.map((p, i) => (
-            <div key={`${p}-${i}`} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 animate-in slide-in-from-left duration-200">
-              <div className="flex items-center space-x-4">
-                <span className="text-ps-blue font-black italic">{i + 1}</span>
-                <PayloadName path={p} className="text-white" />
+            <div key={`${p}-${i}`} className="relative flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 animate-in slide-in-from-left duration-200">
+              <div className="absolute top-0 left-0 w-6 h-6 rounded-full bg-dark flex items-center justify-center z-20">
+                <span className="text-gray-500 text-[12px] font-black">{i + 1}</span>
+              </div>
+              <div className="flex items-center min-w-0 pl-2">
+                <PayloadName path={p} className="text-white" stacked />
               </div>
               <div className="flex items-center space-x-2">
-                <button onClick={() => moveUp(i)} disabled={i === 0} className="p-2 bg-white/10 text-zinc-400 hover:bg-ps-blue hover:text-white rounded-xl disabled:opacity-5">
+                <button onClick={() => moveUp(i)} disabled={i === 0} className="p-2 bg-white/10 text-zinc-400 hover:bg-ps-blue hover:text-white rounded-xl disabled:opacity-20">
                   <ChevronUp className="w-5 h-5" />
                 </button>
-                <button onClick={() => moveDown(i)} disabled={i === autoloadList.length - 1} className="p-2 bg-white/10 text-zinc-400 hover:bg-ps-blue hover:text-white rounded-xl disabled:opacity-5">
+                <button onClick={() => moveDown(i)} disabled={i === autoloadList.length - 1} className="p-2 bg-white/10 text-zinc-400 hover:bg-ps-blue hover:text-white rounded-xl disabled:opacity-20">
                   <ChevronDown className="w-5 h-5" />
                 </button>
                 <button onClick={() => setAutoloadList(autoloadList.filter((_, idx) => idx !== i))} className="p-2 bg-white/10 text-zinc-400 hover:bg-red-600 hover:text-white rounded-xl">

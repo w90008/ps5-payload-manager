@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { CloudDownload, Upload, Package, Database, RefreshCw, Trash2, ShieldCheck, Loader2, AlertTriangle, HardDrive, Usb } from 'lucide-react'
+import { CloudDownload, Upload, Package, Database, RefreshCw, Trash2, Loader2, AlertTriangle, HardDrive, Usb } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { cn, isPS5 } from '../../utils/helpers'
 import PayloadName from '../ui/PayloadName'
@@ -141,7 +141,7 @@ const StorageHub = ({ payloads, onInstall, onDelete, onUpload, onImportFromUsb, 
                       <Package className="w-6 h-6 md:w-8 md:h-8 text-zinc-400 group-hover:text-ps-blue transition-colors" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <PayloadName path={fileName} className="text-xl md:text-2xl" versionClassName="text-[10px] md:text-sm px-2 md:px-3 py-0.5 md:py-1 bg-ps-blue/10 text-ps-blue border-ps-blue/20" />
+                      <PayloadName path={fileName} className="text-xl md:text-2xl text-white" stacked />
                     </div>
                   </div>
                   <div className="flex items-center space-x-3 md:space-x-4 ml-auto md:ml-0">
@@ -200,7 +200,7 @@ const StorageHub = ({ payloads, onInstall, onDelete, onUpload, onImportFromUsb, 
                       <Usb className="w-6 h-6 md:w-8 md:h-8 text-zinc-400 group-hover:text-ps-blue transition-colors" />
                     </div>
                     <div className="space-y-1 min-w-0 flex-1">
-                      <PayloadName path={path} className="text-xl md:text-2xl" versionClassName="text-[10px] md:text-sm px-2 md:px-3 py-0.5 md:py-1 bg-ps-blue/10 text-ps-blue border-ps-blue/20" hideIcon={true} />
+                      <PayloadName path={path} className="text-xl md:text-2xl text-white" stacked hideIcon={true} />
                       <p className="text-[10px] text-zinc-600 font-medium font-mono uppercase tracking-tighter opacity-60 truncate">{path}</p>
                     </div>
                   </div>
@@ -255,7 +255,6 @@ const StorageHub = ({ payloads, onInstall, onDelete, onUpload, onImportFromUsb, 
           <div className="grid grid-cols-1 gap-4">
             {cloudItems.length === 0 ? (
               <div className="py-20 border-2 border-dashed border-white/5 rounded-ps-3xl flex flex-col items-center justify-center space-y-4 bg-white/[0.01]">
-                <ShieldCheck className="w-16 h-16 text-emerald-500/10" />
                 <p className="text-zinc-500 font-bold uppercase tracking-widest text-sm italic">Repository Up to Date</p>
               </div>
             ) : (
@@ -266,7 +265,7 @@ const StorageHub = ({ payloads, onInstall, onDelete, onUpload, onImportFromUsb, 
                 )}>
                   <div className="space-y-2 md:space-y-3 min-w-0">
                     <div className="flex items-center space-x-4">
-                      <PayloadName path={p.filename} className="text-xl md:text-2xl" versionClassName="text-[10px] md:text-sm px-2 md:px-3 py-0.5 md:py-1 bg-ps-blue/10 text-ps-blue border-ps-blue/20" />
+                      <PayloadName path={p.filename} className="text-xl md:text-2xl text-white" stacked />
                     </div>
                     <p className="text-sm md:text-lg text-zinc-400 font-medium max-w-3xl leading-relaxed">{p.description}</p>
                   </div>

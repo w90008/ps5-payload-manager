@@ -11,7 +11,7 @@ const PayloadName = ({ path, className, versionClassName, stacked = false, hideI
       <div className="flex items-center space-x-2 min-w-0">
         {isDelay && !hideIcon && <Zap className="w-4 h-4 text-ps-blue shrink-0" />}
         {isUsb && !hideIcon && <Usb className="w-5 h-5 text-ps-blue shrink-0 mr-1" />}
-        <span className="font-extrabold truncate shrink leading-tight">{displayName}</span>
+        <span className="font-bold truncate shrink leading-tight">{displayName}</span>
       </div>
       {version && (
         <span className={cn(
