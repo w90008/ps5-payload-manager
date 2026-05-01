@@ -1,42 +1,45 @@
-# Payload Manager
+<p align="center">
+ <img src="./assets/icon0.png" width="128" />
+</p>
+<h1 align="center">PS5 Payload Manager</h1>
 
-## Structure
-- `src/`: C source files.
-- `include/`: C header files.
-- `frontend/`: React frontend source.
-- `tools/`: Build scripts.
+<p align="center">A modern, web-based dashboard to easily manage, import, and automatically load payloads on your PS5.</p>
 
-## How to Build
+<p align="center">
+ <img src="./pldmgr_screenshot.png" width="600" />
+</p>
 
-### 1. Build the Frontend
-You must build the React UI first. This converts the JSX into the `dist/index.html` file that gets embedded.
-```bash
-make frontend-build
-```
+## Features
+- **Web-Based Interface**: A modern dashboard to manage payloads from your PC, phone, or the PS5 itself.
+- **Import Payloads**: Easily add new payloads from a USB drive or download them from the cloud repository.
+- **Automated Startup**: Set up a list of payloads to load automatically whenever you start the manager.
+- **Home Screen Shortcut**: Installs a dedicated "Payload Manager" app icon to your PS5 home screen for quick access.
+- **Auto-Close Disc Player**: Optional setting to automatically close the Disc Player on startup (useful for BD-JB users).
 
-### 2. Build the SDK Docker Image
-If you haven't already, build the SDK environment:
-```bash
-docker build -t ps5-payload-sdk -f Dockerfile.sdk .
-```
 
-### 3. Build the ELF
-Use the Docker container to compile the Payload Manager. It is recommended to run `make clean` if you updated the frontend.
-```bash
-docker run --rm -v $(pwd):/src -w /src ps5-payload-sdk make clean all
-```
+## Installation
 
-The resulting `pldmgr.elf` will be created in the root directory.
+### Using an Autoloader (Recommended)
+It is highly recommended to use **Payload Manager** together with an **Autoloader**:
 
-## Automated Deploy
+[Y2JB](https://github.com/itsPLK/ps5-y2jb-autoloader) | [BD-JB](https://github.com/itsPLK/ps5-bdjb-autoloader) | [Lua](https://github.com/itsPLK/ps5-lua-autoloader)
 
-For a quick build & deploy cycle, use the `deploy.sh` script. It will automatically call `/shutdown` on the PS5, run the docker build, and send the new ELF via `socat`.
+`pldmgr.elf` is already included as the default payload in the latest versions of the Autoloaders linked above.
 
-```bash
-./deploy.sh [PS5_IP]
-```
-(Requires PS5 IP as the first argument).
+If you are using an older version and don't want to update the entire autoloader, you can simply:
+1. Place `pldmgr.elf` into your `autoload` directory.
+2. Add `pldmgr.elf` as the only entry in your `autoload.txt` config file.
 
-## Manual Deploy
-1. Upload `pldmgr.elf` to your PS5 (e.g., via port 9021).
-2. The menu will be available at `http://[PS5_IP]:8084`.
+### Standalone / Manual Loading
+You can also manually load the manager like any other `.elf` file. Grab the latest version from the [Releases](https://github.com/itsPLK/ps5-payload-manager/releases) page.
+
+## Credits
+- [John Törnblom](https://github.com/john-tornblom) - for the [shell UI installer](https://github.com/ps5-payload-dev/ftpsrv/blob/master/install-ps5.c) and various payloads used as reference.
+- [BenNoxXD](https://github.com/BenNoxXD) - for the [Disc Player App termination logic](https://github.com/BenNoxXD/PS5-BDJ-HEN-loader/blob/main/HENloader_C_part/src/kill_disc_player.c).
+- Everyone else contributing to the PS5 homebrew scene.
+
+## Donations
+If you'd like to support my work, please check out the [DONATE.md](DONATE.md) file.
+
+## Development
+For build instructions and deployment details, see [DEVELOPMENT.md](DEVELOPMENT.md).
