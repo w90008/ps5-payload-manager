@@ -8,10 +8,13 @@
 #include <arpa/inet.h>
 #include <microhttpd.h>
 #include <signal.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/syscall.h>
+#include <sys/sysctl.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -45,6 +48,46 @@ static int log_updated = 0;
 static volatile sig_atomic_t resume_flag = 0;
 
 void handle_sigcont(int sig) { resume_flag = 1; }
+
+static pid_t
+find_pid(const char* name) {
+  int mib[4] = {1, 14, 8, 0};
+  pid_t mypid = getpid();
+  pid_t pid = -1;
+  size_t buf_size;
+  uint8_t *buf;
+
+  if(sysctl(mib, 4, 0, &buf_size, 0, 0)) {
+    pldmgr_log("[PLDMGR] sysctl failed\n");
+    return -1;
+  }
+
+  if(!(buf=malloc(buf_size))) {
+    pldmgr_log("[PLDMGR] malloc failed\n");
+    return -1;
+  }
+
+  if(sysctl(mib, 4, buf, &buf_size, 0, 0)) {
+    pldmgr_log("[PLDMGR] sysctl failed\n");
+    free(buf);
+    return -1;
+  }
+
+  for(uint8_t *ptr=buf; ptr<(buf+buf_size);) {
+    int ki_structsize = *(int*)ptr;
+    pid_t ki_pid = *(pid_t*)&ptr[72];
+    char *ki_tdname = (char*)&ptr[447];
+
+    ptr += ki_structsize;
+    if(!strcmp(name, ki_tdname) && ki_pid != mypid) {
+      pid = ki_pid;
+    }
+  }
+
+  free(buf);
+
+  return pid;
+}
 
 void pldmgr_log(const char *fmt, ...) {
   char line[MAX_LOG_LINE_LEN];
@@ -1149,6 +1192,18 @@ __attribute__((used)) volatile const char pldmgr_version_sig[] = "PLDMGR_VER:" M
 int main(int argc, char *argv[]) {
   struct MHD_Daemon *daemon;
   unsigned short port = DEFAULT_PORT;
+  pid_t pid;
+
+  syscall(SYS_thr_set_name, -1, "pldmgr.elf");
+
+  while((pid=find_pid("pldmgr.elf")) > 0) {
+    if(kill(pid, SIGKILL)) {
+      pldmgr_log("[PLDMGR] kill failed\n");
+      return EXIT_FAILURE;
+    }
+    sleep(1);
+  }
+
   pldmgr_log("[PLDMGR] Starting Payload Manager v%s on port %d...\n", pldmgr_version_sig + 11,
          port);
 
