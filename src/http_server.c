@@ -27,7 +27,7 @@
 #include "assets_favicon_svg.h"
 #include "assets_icon_png.h"
 
-#define RESPONSE_BUFFER_SIZE 65536
+#define RESPONSE_BUFFER_SIZE 1048576
 #define CORS_ORIGIN "*"
 
 /* Shared flag — set from main() shutdown route, read by main loop */
