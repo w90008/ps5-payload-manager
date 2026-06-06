@@ -467,6 +467,9 @@ int payload_mgr_usb_move(const char *usb_path, int overwrite, char *out_json,
     snprintf(details_path, sizeof(details_path), "%s/%s.json", payload_dir, filename);
     write_simple_payload_details_json(filename, details_path, "usb", usb_path);
 
+    /* Remove the original file to complete the move */
+    remove(usb_path);
+
     pldmgr_log("[PLDMGR] USB payload moved: %s -> %s\n", usb_path, final_path);
     snprintf(out_json, out_size, "{\"ok\":true,\"message\":\"Moved successfully\"}");
     return 0;
