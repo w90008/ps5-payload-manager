@@ -165,11 +165,11 @@ const AutoloadView = ({ payloads, config, onSaveConfig, onToast, onRedirect }) =
             >
               <div className="flex items-center space-x-3 text-ps-blue group-hover:text-white transition-colors">
                 <span className="font-black italic text-lg uppercase tracking-tight">
-                  نقل من USB إلى الداخلي
+                  نقل من الفلاش الى الهارد الداخلي
                 </span>
               </div>
               <p className="text-xs text-zinc-600 max-w-[200px] leading-relaxed">
-                مطلوب لكي يظهر داخل تسلسل التشغيل التلقائي
+                مطلوب الفلاش لكي يظهر داخل تسلسل التشغيل التلقائي
               </p>
             </button>
           </div>
