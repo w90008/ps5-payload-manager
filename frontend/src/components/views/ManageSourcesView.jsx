@@ -20,7 +20,7 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
       .then(d => {
         if (d?.sources) setSources(d.sources)
       })
-      .catch(() => { })
+      .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 
@@ -32,19 +32,19 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
         body: JSON.stringify({ sources: updated })
       })
       if (res.ok) {
-        addToast('Sources saved')
+        addToast('تم حفظ المصادر')
       } else {
-        addToast('Failed to save sources', 'error')
+        addToast('فشل حفظ المصادر', 'error')
       }
     } catch {
-      addToast('Failed to save sources', 'error')
+      addToast('فشل حفظ المصادر', 'error')
     }
   }
 
   const move = (idx, dir) => {
     if (idx + dir < 1 || idx + dir >= sources.length) return
     const updated = [...sources]
-      ;[updated[idx], updated[idx + dir]] = [updated[idx + dir], updated[idx]]
+    ;[updated[idx], updated[idx + dir]] = [updated[idx + dir], updated[idx]]
     setSources(updated)
     saveSources(updated)
   }
@@ -53,8 +53,8 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
     if (idx === 0) return
     const src = sources[idx]
     showConfirm(
-      'Remove Source',
-      `Remove "${src.name}" from your sources?`,
+      'إزالة المصدر',
+      `هل تريد حذف "${src.name}" من المصادر؟`,
       () => {
         const updated = sources.filter((_, i) => i !== idx)
         setSources(updated)
@@ -68,27 +68,30 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
     setAddError('')
     if (!newUrl.trim()) return
     setAdding(true)
+
     try {
       const res = await fetch(`/sources_add?url=${encodeURIComponent(newUrl.trim())}`)
       const data = await res.json()
+
       if (data.ok) {
-        // Reload sources list
         const listRes = await fetch('/sources_list')
         const listData = await listRes.json()
         if (listData?.sources) setSources(listData.sources)
+
         setNewUrl('')
         setShowAddForm(false)
-        addToast(`"${data.name}" added`)
+        addToast(`تمت إضافة "${data.name}"`)
       } else {
-        setAddError(data.message || 'Failed to add source')
+        setAddError(data.message || 'فشل إضافة المصدر')
       }
     } catch {
-      setAddError('Request failed. Check the URL and try again.')
+      setAddError('فشل الطلب، تأكد من الرابط وحاول مرة أخرى')
     }
+
     setAdding(false)
   }
 
-  /* ---- PS5 Mode: QR + URL only ---- */
+  /* ---- وضع PS5: QR فقط ---- */
   if (isPS5) {
     return (
       <div className="max-w-3xl mx-auto space-y-12 pb-20">
@@ -99,8 +102,9 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
           >
             <ArrowLeft className="w-7 h-7" />
           </button>
+
           <h2 className="text-4xl font-extrabold text-white tracking-tight">
-            Manage <span className="text-ps-blue">Sources</span>
+            إدارة <span className="text-ps-blue">المصادر</span>
           </h2>
         </div>
 
@@ -108,21 +112,23 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
           <div className="bg-white p-6 rounded-3xl">
             <QRCodeSVG value={`http://${ip}:8084`} size={180} level="M" />
           </div>
+
           <code className="text-white font-mono text-xl font-black opacity-90 italic tracking-tight uppercase">
             {ip}:8084
           </code>
+
           <p className="text-zinc-400 text-center text-lg leading-relaxed max-w-md">
-            Open this address on your phone or PC to manage payload sources.
+            افتح هذا العنوان من الهاتف أو الكمبيوتر لإدارة مصادر البايلود.
           </p>
         </div>
       </div>
     )
   }
 
-  /* ---- Desktop Mode: full CRUD ---- */
+  /* ---- وضع الكمبيوتر ---- */
   return (
     <div className="w-full max-w-3xl mx-auto space-y-10 pb-20 min-w-0">
-      {/* Header */}
+      {/* العنوان */}
       <div className="flex items-center space-x-6">
         <button
           onClick={onBack}
@@ -130,11 +136,13 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
         >
           <ArrowLeft className="w-7 h-7" />
         </button>
+
         <h2 className="text-4xl font-extrabold text-white tracking-tight">
-          Payload <span className="text-ps-blue">Sources</span>
+          مصادر <span className="text-ps-blue">البايلود</span>
         </h2>
       </div>
-      {/* Sources list */}
+
+      {/* القائمة */}
       {loading ? (
         <div className="flex justify-center py-16">
           <Loader2 className="w-10 h-10 text-ps-blue animate-spin" />
@@ -151,10 +159,9 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                   : 'border-white/5 bg-white/[0.015]'
               )}
             >
-              {/* Header row on mobile / Left group on desktop */}
+              {/* الاسم */}
               <div className="flex items-center justify-between lg:!justify-start flex-1 min-w-0 gap-4 w-full">
                 <div className="flex items-center gap-3 min-w-0">
-                  {/* Priority index */}
                   <div className={cn(
                     'w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black shrink-0',
                     idx === 0 ? 'bg-ps-blue/20 text-ps-blue' : 'bg-white/5 text-zinc-500'
@@ -162,162 +169,92 @@ const ManageSourcesView = ({ onBack, ip, addToast, showConfirm }) => {
                     {idx + 1}
                   </div>
 
-                  {/* Icon */}
                   <div className="p-2 bg-white/5 rounded-xl shrink-0">
                     {src.removable
-                      ? <Globe className="w-5 h-5 text-zinc-400 group-hover:text-ps-blue transition-colors" />
+                      ? <Globe className="w-5 h-5 text-zinc-400" />
                       : <Lock className="w-5 h-5 text-ps-blue" />
                     }
                   </div>
 
-                  {/* Name (mobile only, inline header) */}
                   <div className="min-w-0 lg:hidden">
-                    <p className="font-bold text-white text-base leading-tight truncate">{src.name}</p>
+                    <p className="font-bold text-white text-base truncate">{src.name}</p>
                   </div>
                 </div>
 
-                {/* Mobile-only controls */}
+                {/* تحكم الهاتف */}
                 <div className="flex items-center space-x-2 shrink-0 lg:hidden">
                   {src.removable && (
                     <>
-                      <button
-                        onClick={() => move(idx, -1)}
-                        disabled={idx <= 1}
-                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                        title="Move up"
-                      >
+                      <button onClick={() => move(idx, -1)} className="p-2 bg-white/5 rounded-xl">
                         <ChevronUp className="w-4 h-4" />
                       </button>
-                      <button
-                        onClick={() => move(idx, 1)}
-                        disabled={idx === sources.length - 1}
-                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                        title="Move down"
-                      >
+                      <button onClick={() => move(idx, 1)} className="p-2 bg-white/5 rounded-xl">
                         <ChevronDown className="w-4 h-4" />
                       </button>
-                      <button
-                        onClick={() => remove(idx)}
-                        className="p-2 rounded-xl bg-red-950/20 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all"
-                        title="Remove source"
-                      >
+                      <button onClick={() => remove(idx)} className="p-2 bg-red-950/20 text-red-500 rounded-xl">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </>
                   )}
-                  {!src.removable && (
-                    <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-ps-blue border border-ps-blue/20 bg-ps-blue/5">
-                      Default
-                    </span>
-                  )}
                 </div>
 
-                {/* Desktop-only Name + URL container */}
+                {/* الاسم والرابط (سطح المكتب) */}
                 <div className="hidden lg:flex lg:flex-col flex-1 min-w-0">
-                  <p className="font-bold text-white text-base leading-tight truncate">{src.name}</p>
-                  <p className="text-xs text-zinc-500 truncate mt-0.5 font-mono">{src.url}</p>
+                  <p className="font-bold text-white truncate">{src.name}</p>
+                  <p className="text-xs text-zinc-500 truncate font-mono">{src.url}</p>
                 </div>
               </div>
 
-              {/* Mobile-only URL row (separated for more vertical height and scrollable view) */}
-              <div className="lg:hidden w-full min-w-0 max-w-full overflow-hidden">
-                <div className="bg-white/[0.02] border border-white/5 rounded-xl p-3.5 flex flex-col gap-1 min-w-0 max-w-full overflow-hidden">
-                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Source URL</span>
-                  <div className="overflow-x-auto py-0.5 custom-scrollbar min-w-0 w-full max-w-full">
-                    <p className="text-xs text-zinc-400 font-mono whitespace-nowrap min-w-0">{src.url}</p>
-                  </div>
+              {/* الرابط للموبايل */}
+              <div className="lg:hidden w-full">
+                <div className="bg-white/[0.02] border border-white/5 rounded-xl p-3.5">
+                  <span className="text-[10px] text-zinc-500 font-bold">رابط المصدر</span>
+                  <p className="text-xs text-zinc-400 font-mono truncate">{src.url}</p>
                 </div>
-              </div>
-
-              {/* Desktop-only Controls */}
-              <div className="hidden lg:flex items-center space-x-2 shrink-0">
-                {src.removable && (
-                  <>
-                    <button
-                      onClick={() => move(idx, -1)}
-                      disabled={idx <= 1}
-                      className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                      title="Move up"
-                    >
-                      <ChevronUp className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => move(idx, 1)}
-                      disabled={idx === sources.length - 1}
-                      className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-                      title="Move down"
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => remove(idx)}
-                      className="p-2 rounded-xl bg-red-950/20 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all"
-                      title="Remove source"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </>
-                )}
-                {!src.removable && (
-                  <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-ps-blue border border-ps-blue/20 bg-ps-blue/5">
-                    Default
-                  </span>
-                )}
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Add Source */}
+      {/* إضافة مصدر */}
       {!showAddForm ? (
         <button
           onClick={() => { setShowAddForm(true); setAddError('') }}
-          className="w-full flex items-center justify-center space-x-3 py-5 border-2 border-dashed border-white/10 rounded-2xl text-zinc-500 hover:text-ps-blue hover:border-ps-blue/30 transition-all font-bold"
+          className="w-full flex items-center justify-center space-x-3 py-5 border-2 border-dashed border-white/10 rounded-2xl text-zinc-500 hover:text-ps-blue hover:border-ps-blue/30 font-bold"
         >
           <Plus className="w-5 h-5" />
-          <span>Add Source</span>
+          <span>إضافة مصدر</span>
         </button>
       ) : (
         <form onSubmit={handleAdd} className="p-6 glass-card rounded-2xl border border-white/10 space-y-4">
-          <p className="font-bold text-white text-lg">Add a New Source</p>
-          <p className="text-sm text-zinc-500">
-            Paste the URL to a JSON file.
-          </p>
-          <div className="flex flex-col lg:flex-row gap-3">
-            <input
-              type="url"
-              value={newUrl}
-              onChange={e => setNewUrl(e.target.value)}
-              placeholder="https://example.com/payloads.json"
-              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-white text-sm placeholder-zinc-600 focus:outline-none focus:border-ps-blue/50 transition-colors w-full"
-              autoFocus
-              disabled={adding}
-            />
-            <div className="flex gap-3 w-full lg:w-auto">
-              <button
-                type="submit"
-                disabled={adding || !newUrl.trim()}
-                className="flex-1 md:flex-initial flex items-center justify-center space-x-2 px-6 py-3 bg-ps-blue hover:bg-ps-blue/80 disabled:opacity-50 text-white rounded-xl font-bold transition-all whitespace-nowrap"
-              >
-                {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                <span>{adding ? 'Validating...' : 'Add'}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => { setShowAddForm(false); setNewUrl(''); setAddError('') }}
-                disabled={adding}
-                className="flex-1 md:flex-initial px-5 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold transition-all text-center whitespace-nowrap"
-              >
-                Cancel
-              </button>
-            </div>
+          <p className="font-bold text-white text-lg">إضافة مصدر جديد</p>
+          <p className="text-sm text-zinc-500">ضع رابط ملف JSON</p>
+
+          <input
+            type="url"
+            value={newUrl}
+            onChange={e => setNewUrl(e.target.value)}
+            placeholder="https://example.com/payloads.json"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-white"
+            disabled={adding}
+          />
+
+          <div className="flex gap-3">
+            <button type="submit" disabled={adding} className="px-6 py-3 bg-ps-blue text-white rounded-xl font-bold">
+              {adding ? 'جاري التحقق...' : 'إضافة'}
+            </button>
+
+            <button type="button" onClick={() => setShowAddForm(false)} className="px-6 py-3 bg-white/5 rounded-xl">
+              إلغاء
+            </button>
           </div>
+
           {addError && (
-            <div className="flex items-center space-x-3 text-red-400 text-sm">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
-              <span>{addError}</span>
-            </div>
+            <p className="text-red-400 text-sm flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4" />
+              {addError}
+            </p>
           )}
         </form>
       )}
