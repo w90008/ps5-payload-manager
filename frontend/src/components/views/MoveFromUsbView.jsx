@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { ArrowLeft, HardDrive, Cpu, AlertTriangle, CheckCircle2, Loader2, Info, Usb } from 'lucide-react'
+import { ArrowLeft, AlertTriangle, CheckCircle2, Loader2, Info, Usb } from 'lucide-react'
 import { cn } from '../../utils/helpers'
 
 const MoveFromUsbView = ({ path, onBack, onComplete, addToast }) => {
-  const [status, setStatus] = useState('loading') // loading, confirm, exists_same, exists_different, processing, error, success
+  const [status, setStatus] = useState('loading')
   const [details, setDetails] = useState(null)
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -16,17 +16,19 @@ const MoveFromUsbView = ({ path, onBack, onComplete, addToast }) => {
     try {
       const res = await fetch(`/usb_move_check?path=${encodeURIComponent(path)}`)
       const data = await res.json()
+
       if (data.error) {
         setErrorMsg(data.error)
         setStatus('error')
       } else {
         setDetails(data)
+
         if (data.status === 'exists_same') setStatus('exists_same')
         else if (data.status === 'exists_different' || data.folder_exists) setStatus('exists_different')
         else setStatus('confirm')
       }
-    } catch (e) {
-      setErrorMsg("Failed to connect to backend")
+    } catch {
+      setErrorMsg('فشل الاتصال بالخادم')
       setStatus('error')
     }
   }
@@ -34,142 +36,188 @@ const MoveFromUsbView = ({ path, onBack, onComplete, addToast }) => {
   const performMove = async (overwrite = false, keepOriginal = false) => {
     setStatus('processing')
     try {
-      const res = await fetch(`/usb_move_perform?path=${encodeURIComponent(path)}&overwrite=${overwrite}&keep_original=${keepOriginal}`)
+      const res = await fetch(
+        `/usb_move_perform?path=${encodeURIComponent(path)}&overwrite=${overwrite}&keep_original=${keepOriginal}`
+      )
       const data = await res.json()
+
       if (data.error) {
         setErrorMsg(data.error)
         setStatus('error')
       } else {
         setStatus('success')
-        addToast(data.warning || (keepOriginal ? "Payload copied to internal memory" : "Payload moved to internal memory"))
+
+        addToast(
+          data.warning ||
+            (keepOriginal ? 'تم نسخ البايلود إلى الذاكرة الداخلية' : 'تم نقل البايلود إلى الذاكرة الداخلية')
+        )
+
         setTimeout(() => {
           onComplete()
         }, 2000)
       }
-    } catch (e) {
-      setErrorMsg("Operation failed")
+    } catch {
+      setErrorMsg('فشلت العملية')
       setStatus('error')
     }
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12 animate-fade-in pb-20">
-      <button onClick={onBack} className="flex items-center space-x-3 text-zinc-500 hover:text-white transition-colors group">
+    <div className="max-w-4xl mx-auto space-y-12 pb-20">
+      <button
+        onClick={onBack}
+        className="flex items-center space-x-3 text-zinc-500 hover:text-white transition-colors group"
+      >
         <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
-        <span className="font-bold uppercase tracking-widest text-sm">Back to Management</span>
+        <span className="font-bold uppercase tracking-widest text-sm">رجوع</span>
       </button>
 
       <div className="space-y-4">
         <h2 className="text-4xl font-extrabold text-white tracking-tight">
-          Import <span className="text-ps-blue">to Internal</span>
+          استيراد إلى <span className="text-ps-blue">الذاكرة الداخلية</span>
         </h2>
-        <p className="text-zinc-500 max-w-2xl">Import the selected payload from your USB drive to the PS5's internal data storage.</p>
+
+        <p className="text-zinc-500 max-w-2xl">
+          سيتم نقل البايلود المحدد من USB إلى التخزين الداخلي للجهاز.
+        </p>
       </div>
 
-      <div className="glass-card p-6 md:p-10 rounded-ps-3xl border-white/10 bg-white/[0.02] space-y-8 md:space-y-10">
+      <div className="glass-card p-6 md:p-10 rounded-ps-3xl border-white/10 bg-white/[0.02] space-y-10">
+        {/* المصدر */}
         <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-8 text-center sm:text-left">
           <div className="p-4 md:p-6 bg-ps-blue/20 rounded-3xl border border-ps-blue/30 shrink-0">
             <Usb className="w-8 h-8 md:w-10 md:h-10 text-ps-blue" />
           </div>
-          <div className="space-y-1 md:space-y-2 min-w-0 flex-1">
-            <p className="label-caps !text-ps-blue">Source Path</p>
-            <p className="text-xl md:text-2xl font-black text-white italic tracking-tight truncate w-full">{path}</p>
+
+          <div className="space-y-2 min-w-0 flex-1">
+            <p className="text-ps-blue uppercase text-xs font-bold tracking-widest">المسار المصدر</p>
+            <p className="text-xl md:text-2xl font-black text-white italic truncate w-full">
+              {path}
+            </p>
           </div>
         </div>
 
         <div className="h-px bg-white/5" />
 
+        {/* تحميل */}
         {status === 'loading' && (
-          <div className="py-12 flex flex-col items-center justify-center space-y-6">
+          <div className="py-12 flex flex-col items-center space-y-6">
             <Loader2 className="w-12 h-12 text-ps-blue animate-spin" />
-            <p className="label-caps animate-pulse text-zinc-500">Checking internal storage...</p>
+            <p className="text-zinc-500 uppercase tracking-widest text-sm">جاري فحص التخزين الداخلي...</p>
           </div>
         )}
 
+        {/* خطأ */}
         {status === 'error' && (
           <div className="p-8 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-start space-x-6">
-            <AlertTriangle className="w-8 h-8 text-red-500 shrink-0" />
+            <AlertTriangle className="w-8 h-8 text-red-500" />
             <div className="space-y-2">
-              <p className="text-lg font-bold text-white">Something went wrong</p>
-              <p className="text-red-400/80 leading-relaxed">{errorMsg}</p>
-              <button onClick={checkPayload} className="mt-4 px-6 py-2 bg-red-500 text-white rounded-xl font-bold text-sm">Retry</button>
+              <p className="text-lg font-bold text-white">حدث خطأ</p>
+              <p className="text-red-400">{errorMsg}</p>
+
+              <button
+                onClick={checkPayload}
+                className="mt-4 px-6 py-2 bg-red-500 text-white rounded-xl font-bold text-sm"
+              >
+                إعادة المحاولة
+              </button>
             </div>
           </div>
         )}
 
+        {/* موجود نفس الملف */}
         {status === 'exists_same' && (
-          <div className="space-y-6 md:space-y-8">
-            <div className="p-6 md:p-8 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 text-center md:text-left">
-              <CheckCircle2 className="w-8 h-8 text-emerald-500 shrink-0" />
+          <div className="space-y-8">
+            <div className="p-8 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex flex-col md:flex-row gap-4">
+              <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+
               <div className="space-y-2">
-                <p className="text-lg font-bold text-white">Identical file already exists</p>
-                <p className="text-sm md:text-lg text-emerald-400/80 leading-relaxed">
-                  A payload with the same name and content (SHA256: {details?.sha256?.substring(0, 12)}...) is already in your internal library. No action is needed.
+                <p className="text-lg font-bold text-white">الملف موجود بالفعل</p>
+                <p className="text-emerald-400">
+                  نفس البايلود موجود في النظام (SHA256: {details?.sha256?.substring(0, 12)}...)
                 </p>
               </div>
             </div>
-            <button onClick={onBack} className="w-full py-4 md:py-6 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-black uppercase italic text-lg md:text-xl transition-all border border-white/10">Return to Storage Hub</button>
+
+            <button
+              onClick={onBack}
+              className="w-full py-5 bg-white/5 hover:bg-white/10 rounded-2xl font-black uppercase"
+            >
+              العودة
+            </button>
           </div>
         )}
 
+        {/* إصدار مختلف */}
         {status === 'exists_different' && (
-          <div className="space-y-6 md:space-y-8">
-            <div className="p-6 md:p-8 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 text-center md:text-left">
-              <AlertTriangle className="w-8 h-8 text-amber-500 shrink-0" />
+          <div className="space-y-8">
+            <div className="p-8 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex flex-col md:flex-row gap-4">
+              <AlertTriangle className="w-8 h-8 text-amber-500" />
+
               <div className="space-y-2">
-                <p className="text-lg font-bold text-white">Previous version detected</p>
-                <p className="text-sm md:text-lg text-amber-400/80 leading-relaxed">
-                  A version of <strong>{details?.folder_name || details?.filename}</strong> already exists in internal storage. Importing this will replace the current installation. Do you want to proceed?
+                <p className="text-lg font-bold text-white">إصدار موجود مسبقاً</p>
+                <p className="text-amber-400">
+                  يوجد إصدار آخر من هذا البايلود، هل تريد استبداله؟
                 </p>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button onClick={onBack} className="flex-1 py-4 md:py-6 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold uppercase transition-all">Cancel</button>
-              <div className="flex flex-1 gap-2">
-                <button onClick={() => performMove(true, true)} className="flex-1 py-4 md:py-6 rounded-2xl bg-ps-blue/50 hover:bg-ps-blue/70 text-white font-black uppercase italic text-sm md:text-lg transition-all border border-ps-blue/30">Overwrite & Copy</button>
-                <button onClick={() => performMove(true, false)} className="flex-1 py-4 md:py-6 rounded-2xl bg-ps-blue hover:bg-ps-blue/80 text-white font-black uppercase italic text-sm md:text-lg transition-all shadow-xl shadow-ps-blue/20">Overwrite & Move</button>
-              </div>
+
+            <div className="flex gap-4">
+              <button onClick={onBack} className="flex-1 py-5 bg-white/5 rounded-2xl">
+                إلغاء
+              </button>
+
+              <button onClick={() => performMove(true, true)} className="flex-1 py-5 bg-ps-blue/60 rounded-2xl">
+                نسخ واستبدال
+              </button>
+
+              <button onClick={() => performMove(true, false)} className="flex-1 py-5 bg-ps-blue rounded-2xl">
+                نقل واستبدال
+              </button>
             </div>
           </div>
         )}
 
+        {/* تأكيد */}
         {status === 'confirm' && (
-          <div className="space-y-6 md:space-y-8">
-            <div className="p-6 md:p-8 bg-ps-blue/5 border border-ps-blue/10 rounded-2xl flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 text-center md:text-left">
-              <Info className="w-8 h-8 text-ps-blue shrink-0" />
+          <div className="space-y-8">
+            <div className="p-8 bg-ps-blue/10 border border-ps-blue/20 rounded-2xl flex flex-col md:flex-row gap-4">
+              <Info className="w-8 h-8 text-ps-blue" />
+
               <div className="space-y-2">
-                <p className="text-lg font-bold text-white">Ready to Import</p>
-                <p className="text-sm md:text-lg text-zinc-400 leading-relaxed">
-                  The payload will be imported to internal storage. You can either copy it and keep the original on the USB, or move it and delete the original.
+                <p className="text-lg font-bold text-white">جاهز للنقل</p>
+                <p className="text-zinc-400">
+                  يمكنك نسخ البايلود أو نقله مباشرة إلى التخزين الداخلي.
                 </p>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button onClick={() => performMove(false, true)} className="flex-1 py-4 md:py-6 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-black uppercase italic text-lg md:text-xl transition-all border border-white/20">Copy to Internal</button>
-              <button onClick={() => performMove(false, false)} className="flex-1 py-4 md:py-6 rounded-2xl bg-ps-blue hover:bg-ps-blue/80 text-white font-black uppercase italic text-lg md:text-xl transition-all shadow-2xl shadow-ps-blue/30">Move to Internal</button>
+
+            <div className="flex gap-4">
+              <button onClick={() => performMove(false, true)} className="flex-1 py-5 bg-white/10 rounded-2xl">
+                نسخ
+              </button>
+
+              <button onClick={() => performMove(false, false)} className="flex-1 py-5 bg-ps-blue rounded-2xl">
+                نقل
+              </button>
             </div>
           </div>
         )}
 
+        {/* جاري التنفيذ */}
         {status === 'processing' && (
-          <div className="py-20 flex flex-col items-center justify-center space-y-8 text-center">
-            <div className="ps5-robust-spinner" />
-            <div className="space-y-2">
-              <p className="text-2xl font-black text-white uppercase italic tracking-tighter animate-pulse">Importing Payload...</p>
-              <p className="text-zinc-500">Copying data and verifying integrity.</p>
-            </div>
+          <div className="py-20 flex flex-col items-center space-y-6">
+            <Loader2 className="w-12 h-12 text-ps-blue animate-spin" />
+            <p className="text-xl font-bold text-white uppercase">جاري النقل...</p>
           </div>
         )}
 
+        {/* نجاح */}
         {status === 'success' && (
-          <div className="py-20 flex flex-col items-center justify-center space-y-8 text-center">
-            <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center shadow-2xl shadow-emerald-500/20 animate-in zoom-in duration-500">
-              <CheckCircle2 className="w-14 h-14 text-white" />
-            </div>
-            <div className="space-y-2">
-              <p className="text-3xl font-black text-white uppercase italic tracking-tighter">Success!</p>
-              <p className="text-zinc-500">The payload has been safely imported to internal storage.</p>
-            </div>
+          <div className="py-20 flex flex-col items-center space-y-6">
+            <CheckCircle2 className="w-16 h-16 text-emerald-500" />
+            <p className="text-2xl font-black text-white">تم بنجاح</p>
+            <p className="text-zinc-500">تم نقل البايلود إلى التخزين الداخلي.</p>
           </div>
         )}
       </div>
