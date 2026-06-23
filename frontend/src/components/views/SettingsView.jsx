@@ -34,16 +34,17 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
     <div className="max-w-5xl mx-auto space-y-16 pb-20">
       <div className="space-y-4">
         <h2 className="text-4xl font-extrabold text-white tracking-tight">
-          Settings
+          الإعدادات
         </h2>
       </div>
 
       {/* Startup Settings */}
       <section className="space-y-8">
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
           <SettingRow
-            title="Auto-open Browser"
-            description="Automatically launch the browser when Payload Manager payload is executed."
+            title="فتح المتصفح تلقائياً"
+            description="تشغيل المتصفح تلقائياً عند تنفيذ Payload Manager."
           >
             <button
               onClick={() => onSaveConfig({ AUTO_BROWSER_OPEN: !autoOpen })}
@@ -60,8 +61,8 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
           </SettingRow>
 
           <SettingRow
-            title="Auto-install App Launcher"
-            description="Automatically install the Payload Manager app to the PS5 home screen."
+            title="تثبيت التطبيق تلقائياً"
+            description="تثبيت تطبيق Payload Manager على واجهة PS5 تلقائياً."
           >
             <button
               onClick={() => onSaveConfig({ AUTO_INSTALL_APP: !autoInstall })}
@@ -78,8 +79,8 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
           </SettingRow>
 
           <SettingRow
-            title="Kill Disc Player"
-            description="Automatically terminate the Disc Player application on startup (for BD-JB users)."
+            title="إيقاف مشغل الأقراص"
+            description="إيقاف تطبيق مشغل الأقراص تلقائياً عند التشغيل (لمستخدمي BD-JB)."
           >
             <button
               onClick={() => onSaveConfig({ KILL_DISC_PLAYER_ON_STARTUP: !config.KILL_DISC_PLAYER_ON_STARTUP })}
@@ -96,8 +97,8 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
           </SettingRow>
 
           <SettingRow
-            title="Scan USB Payloads"
-            description="Enable scanning for .elf and .bin files in the root directory of USB drives (/mnt/usb0-7)."
+            title="فحص ملفات USB"
+            description="تفعيل البحث عن ملفات .elf و .bin داخل أجهزة USB (/mnt/usb0-7)."
           >
             <button
               onClick={() => onSaveConfig({ SCAN_USB_PAYLOADS: !config.SCAN_USB_PAYLOADS })}
@@ -116,8 +117,8 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
           <div className="flex flex-col justify-between p-8 bg-white/[0.03] rounded-3xl border border-white/10 space-y-8 h-full">
             <div className="flex justify-between items-center">
               <div className="space-y-1">
-                <p className="font-bold text-white uppercase text-lg tracking-tight">Autoload Delay</p>
-                <p className="text-sm text-zinc-500">Wait time before the autoload sequence begins.</p>
+                <p className="font-bold text-white uppercase text-lg tracking-tight">مدة التشغيل التلقائي</p>
+                <p className="text-sm text-zinc-500">وقت الانتظار قبل بدء التشغيل التلقائي.</p>
               </div>
               <span className="text-ps-blue font-black text-4xl italic tracking-tighter">{autoloadDelay}s</span>
             </div>
@@ -134,11 +135,12 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
                       : "bg-white/5 border-white/10 text-zinc-500 hover:bg-white/10 hover:text-white"
                   )}
                 >
-                  {s}s
+                  {s}ث
                 </button>
               ))}
             </div>
           </div>
+
         </div>
       </section>
 
@@ -146,13 +148,14 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
       <section className="space-y-8">
         <h3 className="label-caps !text-ps-blue !opacity-100 flex items-center space-x-4 text-xl tracking-[0.2em]">
           <Globe className="w-6 h-6" />
-          <span>Payload Sources</span>
+          <span>مصادر الحِزم</span>
         </h3>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
           <SettingRow
-            title="Multiple Payload Sources"
-            description="Enable third-party payload repositories. Payloads from multiple sources are grouped by catalog in the Manage tab."
+            title="تفعيل مصادر متعددة"
+            description="السماح باستخدام مستودعات خارجية للحزم."
             icon={Globe}
           >
             <button
@@ -179,18 +182,19 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
                   <Globe className="w-5 h-5 md:w-6 md:h-6 text-zinc-500 group-hover:text-ps-blue transition-colors" />
                 </div>
                 <div className="space-y-1 min-w-0">
-                  <p className="font-bold text-white uppercase text-base md:text-lg tracking-tight leading-tight">Manage Sources</p>
-                  <p className="hidden md:!block text-sm text-zinc-500 max-w-md leading-relaxed">Add, remove, or reorder your payload repositories.</p>
+                  <p className="font-bold text-white uppercase text-base md:text-lg tracking-tight leading-tight">إدارة المصادر</p>
+                  <p className="hidden md:!block text-sm text-zinc-500 max-w-md leading-relaxed">إضافة أو حذف أو ترتيب مستودعات الحزم.</p>
                 </div>
               </div>
               <div className="shrink-0 col-start-2 row-start-1 md:ml-8 self-center md:self-auto">
                 <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-zinc-700 group-hover:text-ps-blue group-hover:translate-x-2 transition-all" />
               </div>
               <p className="md:hidden col-span-2 text-xs text-zinc-500 leading-relaxed">
-                Add, remove, or reorder your payload repositories.
+                إدارة مصادر الحزم.
               </p>
             </button>
           )}
+
         </div>
       </section>
 
@@ -198,7 +202,7 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
       <section className="space-y-8">
         <h3 className="label-caps !text-ps-blue !opacity-100 flex items-center space-x-4 text-xl tracking-[0.2em]">
           <Terminal className="w-6 h-6" />
-          <span>Diagnostics</span>
+          <span>التشخيص</span>
         </h3>
 
         <button
@@ -210,20 +214,18 @@ const SettingsView = ({ config, onSaveConfig, setShowLogs, onNavigate }) => {
               <Terminal className="w-5 h-5 md:w-6 md:h-6 text-zinc-500 group-hover:text-ps-blue transition-colors" />
             </div>
             <div className="space-y-1 min-w-0">
-              <p className="font-bold text-white uppercase text-base md:text-lg tracking-tight leading-tight">Open Log Viewer</p>
-              <p className="hidden md:!block text-sm text-zinc-500 max-w-md leading-relaxed">Access real-time debug output from the Payload Manager daemon.</p>
+              <p className="font-bold text-white uppercase text-base md:text-lg tracking-tight leading-tight">فتح سجل النظام</p>
+              <p className="hidden md:!block text-sm text-zinc-500 max-w-md leading-relaxed">عرض سجل الأخطاء والتشغيل المباشر.</p>
             </div>
           </div>
           <div className="shrink-0 col-start-2 row-start-1 md:ml-8 self-center md:self-auto">
             <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-zinc-700 group-hover:text-ps-blue group-hover:translate-x-2 transition-all" />
           </div>
           <p className="md:hidden col-span-2 text-xs text-zinc-500 leading-relaxed">
-            Access real-time debug output from the Payload Manager daemon.
+            فتح سجل النظام.
           </p>
         </button>
       </section>
-
-
     </div>
   )
 }
